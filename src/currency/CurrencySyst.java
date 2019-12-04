@@ -1,18 +1,9 @@
 package currency;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-
-import currency.DateValidator;
-import currency.Currency;
 
 public class CurrencySyst {
 
@@ -20,11 +11,10 @@ public class CurrencySyst {
 	private String userInputDate1;
 	private String userInputDate2;
 	private String userInputCode;
-	public static List<Currency> currencyList;
+	public static List<CurrencyList> currencyList;
 
-	public void Start() throws ParseException {
+	public void Start() throws ParseException, MalformedURLException {
 
-		Scanner sn = new Scanner(System.in);
 
 		while(true){
 			System.out.println("***** WELCOME TO CURRENCY INFORMATION SYSTEM *****");
@@ -33,10 +23,12 @@ public class CurrencySyst {
 			System.out.println("* Press 3 to exit");
 			System.out.println("Enter your choice");
 
+			Scanner sn = new Scanner(System.in);
+
 			userInput = sn.next();
 
 			switch(userInput){
-			case "1": 
+			case "1": 				
 				System.out.println("* Please enter the date in format 'yyyy-MM-dd'");
 				userInputDate1 = sn.next();
 				System.out.println("* Please enter code of currency");
@@ -60,8 +52,8 @@ public class CurrencySyst {
 				System.exit(0);
 				break;
 			default:
-			System.out.println("Invalid choice. Read the options carefully...");
-			sn.close();
+				System.out.println("Incorrect entry.");
+				System.out.println("Choose again:\n");
 		}
 	}
 		
@@ -79,25 +71,42 @@ public class CurrencySyst {
 		}
 	}
 		
-	private double courseOfSpecDate(String userInputDate1, String userInputCode) throws ParseException {
+	private double courseOfSpecDate(String userInputDate1, String userInputCode) throws ParseException, MalformedURLException {
 		// TODO Auto-generated method stub
-		XMLreader oneDate = new XMLreader();
-		currencyList = oneDate.createCurrencyList(userInputDate1);
+		String csvUrl =  "https://www.lb.lt/lt/currency/daylyexport/?csv=1&class=Eu&type=day&date_day=";
+		csvUrl = csvUrl.concat(userInputDate1);
 		
-		for(Currency i : currencyList) {
-			if (i.getCode().equals(userInputCode.toUpperCase())) {
-				System.out.println("Currency " + i.getName() + ", code " + i.getCode() + ", course on " + userInputDate1 + " was " + i.getCourse());
-				isWorkingDay(userInputDate1, i);
-			return i.getCourse();
-			}
-			else {
-				System.out.println("No such currency found!");
-			}
+		CSVreader oneDate = new CSVreader();
+		currencyList = oneDate.createItemList(csvUrl);
+		
+		
+		
+		for(CurrencyList i : currencyList) {
+			CurrencyList one = new CurrencyList(i.getPart1(), i.getPart2());
+			one.makeCurrency(currencyList);
+//			System.out.println("Currency " + i.getPart1() + ", code " + i.getPart2());
+//			if (i.getCode().equals(userInputCode.toUpperCase())) {
+//				System.out.println("Currency " + i.getPart1() + ", code " + i.getPart2());
+////				isWorkingDay(userInputDate1, i);
+//			return i.getCourse();
+//			}
+//			else {
+//				System.out.println("No such currency found!");
+//			}
+			
 		}
 		return 0; 	
 	}
 	
-	private double diffOfCourse(String userInputDate1, String userInputDate2, String userInputCode) throws ParseException {
+	private double diffOfCourse(String userInputDate1, String userInputDate2, String userInputCode) throws ParseException, MalformedURLException {
+		String csvUrl1 = "https://www.lb.lt/lt/currency/exportlist/?csv=1&currency=";
+		String csvUrl2 = "&ff=1&class=Eu&type=day&date_from_day=";
+		String csvUrl3 = "&date_to_day=";
+		
+		String csvUrl = csvUrl1.concat(userInputCode.concat(csvUrl2.concat(userInputDate1.concat(csvUrl3.concat(userInputDate2)))));
+		
+		CSVreader period = new CSVreader(); 
+		period.createItemList(csvUrl);
 		
 		double course1 = courseOfSpecDate(userInputDate1, userInputCode);
 		double course2 = courseOfSpecDate(userInputDate2, userInputCode);

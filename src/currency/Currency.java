@@ -1,7 +1,5 @@
 package currency;
 
-import java.util.Date;
-
 public class Currency {
 	
 	final private String name;

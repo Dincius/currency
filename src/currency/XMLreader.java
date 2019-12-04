@@ -1,7 +1,6 @@
 package currency;
 
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.ParseException;
@@ -10,13 +9,11 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class XMLreader {
 	
@@ -31,20 +28,30 @@ public class XMLreader {
 		DocumentBuilder db = dbFactory.newDocumentBuilder();
 		InputStream stream = xmlFile.openStream();
 		Document doc = db.parse(stream);
+	
 		doc.getDocumentElement().normalize();
-		System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
-		NodeList nodeList = doc.getElementsByTagName("item");
+		Element root = doc.getDocumentElement();
+		System.out.println(root.getNodeName());
 		
-		for(int itr = 0; itr < nodeList.getLength(); itr++) {
-			Node node = nodeList.item(itr);
+		NodeList nodeList = doc.getElementsByTagName("item");
+		System.out.println("====================");
+
+		for(int i = 0; i < nodeList.getLength(); i++) {
+			Node node = nodeList.item(i);
+			
+			System.out.println("");
 //			System.out.println("\nNode Name:" + node.getNodeName());
 			
 			if (node.getNodeType() == Node.ELEMENT_NODE)  {  
 					Element eElement = (Element) node;
-					Currency moneys = new Currency(eElement.getElementsByTagName("pavadinimas").item(itr).getTextContent(),
-							eElement.getElementsByTagName("valiutos_kodas").item(itr).getTextContent(),
-							doubleCourse(eElement.getElementsByTagName("santykis").item(itr).getTextContent()),
-							eElement.getElementsByTagName("data").item(itr).getTextContent());
+//					System.out.println("Name " + eElement.getElementsByTagName("pavadinimas").item(i).getTextContent());
+//					System.out.println("Code " + eElement.getElementsByTagName("valiutos_kodas").item(i).getTextContent());
+//					System.out.println("Course " + eElement.getElementsByTagName("santykis").item(i).getTextContent());
+//					System.out.println("Date " + eElement.getElementsByTagName("data").item(i).getTextContent());
+					Currency moneys = new Currency(eElement.getElementsByTagName("pavadinimas").item(0).getTextContent(),
+							eElement.getElementsByTagName("valiutos_kodas").item(0).getTextContent(),
+							doubleCourse(eElement.getElementsByTagName("santykis").item(0).getTextContent()),
+							eElement.getElementsByTagName("data").item(0).getTextContent());
 					currency.add(moneys);
 			System.out.println(currency);
 			return currency;
