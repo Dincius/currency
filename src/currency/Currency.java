@@ -2,10 +2,10 @@ package currency;
 
 public class Currency {
 	
-	final private String name;
-	final private String code;
-	final private String date;
-	final private double course;
+	private String name;
+	private String code;
+	private String date;
+	private double course;
 	
 	public Currency(String name, String code, double course, String date) {
 		this.name = name;

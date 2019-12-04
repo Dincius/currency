@@ -11,11 +11,10 @@ public class CurrencySyst {
 	private String userInputDate1;
 	private String userInputDate2;
 	private String userInputCode;
-	public static List<CurrencyList> currencyList;
+	public static List<String> currencyList;
 
 	public void Start() throws ParseException, MalformedURLException {
-
-
+		
 		while(true){
 			System.out.println("***** WELCOME TO CURRENCY INFORMATION SYSTEM *****");
 			System.out.println("* Press 1 to get information about currency's course on specific day");
@@ -55,50 +54,58 @@ public class CurrencySyst {
 				System.out.println("Incorrect entry.");
 				System.out.println("Choose again:\n");
 		}
+	
 	}
 		
 	}
-	
-	private String isWorkingDay(String userInputDate, Currency currency) {
+		
+	private void courseOfSpecDate(String userInputDate1, String userInputCode) throws ParseException, MalformedURLException {
+		String csvUrl =  "https://www.lb.lt/lt/currency/daylyexport/?csv=1&class=Eu&type=day&date_day=";
+		
 		DateValidator dv = new DateValidator();
 		
-		if(dv.isDateCorrect(userInputDate, currency) == false) {
-			return "Warning! Your selected date is not working day. System uses last working day!";
-		}
-		else
-		{
-			return "Your selected date is valid.";
-		}
-	}
+		if (dv.isDateCorrect(userInputDate1) == true) {
+			csvUrl = csvUrl.concat(userInputDate1);
 		
-	private double courseOfSpecDate(String userInputDate1, String userInputCode) throws ParseException, MalformedURLException {
-		// TODO Auto-generated method stub
-		String csvUrl =  "https://www.lb.lt/lt/currency/daylyexport/?csv=1&class=Eu&type=day&date_day=";
-		csvUrl = csvUrl.concat(userInputDate1);
+		double course = 0;
 		
 		CSVreader oneDate = new CSVreader();
 		currencyList = oneDate.createItemList(csvUrl);
+		List<Currency> finalList = oneDate.makeCurrency(currencyList);
 		
+		System.out.println("Currency " + finalList.get(0).getName() + " with code " + userInputCode);
 		
-		
-		for(CurrencyList i : currencyList) {
-			CurrencyList one = new CurrencyList(i.getPart1(), i.getPart2());
-			one.makeCurrency(currencyList);
-//			System.out.println("Currency " + i.getPart1() + ", code " + i.getPart2());
-//			if (i.getCode().equals(userInputCode.toUpperCase())) {
-//				System.out.println("Currency " + i.getPart1() + ", code " + i.getPart2());
-////				isWorkingDay(userInputDate1, i);
-//			return i.getCourse();
-//			}
-//			else {
-//				System.out.println("No such currency found!");
-//			}
-			
+		if(dv.isDateValid(userInputDate1) == true) {
+			for(int i = 0; i < finalList.size(); i++) {
+				if (finalList.get(i).getCode().equals(userInputCode.toUpperCase())) {
+					course = finalList.get(i).getCourse();
+					System.out.println("Course on " + userInputDate1 + " was " + course);
+				}
+				else {
+				}
+			}
 		}
-		return 0; 	
-	}
+		else {
+			System.out.println("Warning! Date is not valid to 'yyyy-MM-dd' pattern");
+			}
+		
+		
+		if(!finalList.get(0).getDate().equals(userInputDate1)) {
+			System.out.println("WARNING! Date is not working day!");
+			System.out.println("System uses the last published course.");
+			}
+		else {
+		    }
+		
+		}
+		else {
+			System.out.println("The date is not working date! Please choose again.");
+		}
+		
+		}
+
 	
-	private double diffOfCourse(String userInputDate1, String userInputDate2, String userInputCode) throws ParseException, MalformedURLException {
+	private void diffOfCourse(String userInputDate1, String userInputDate2, String userInputCode) throws ParseException, MalformedURLException {
 		String csvUrl1 = "https://www.lb.lt/lt/currency/exportlist/?csv=1&currency=";
 		String csvUrl2 = "&ff=1&class=Eu&type=day&date_from_day=";
 		String csvUrl3 = "&date_to_day=";
@@ -106,13 +113,44 @@ public class CurrencySyst {
 		String csvUrl = csvUrl1.concat(userInputCode.concat(csvUrl2.concat(userInputDate1.concat(csvUrl3.concat(userInputDate2)))));
 		
 		CSVreader period = new CSVreader(); 
-		period.createItemList(csvUrl);
+		currencyList = period.createItemList(csvUrl);
 		
-		double course1 = courseOfSpecDate(userInputDate1, userInputCode);
-		double course2 = courseOfSpecDate(userInputDate2, userInputCode);
-	    double difference = course2 - course1;
+		double course1 = 0;
+		double course2 = 0;
+		
+		List<Currency> finalList = period.makeCurrency(currencyList);
+		
+		if(!finalList.get(0).getDate().equals(userInputDate2) || !finalList.get(finalList.size()-1).getDate().equals(userInputDate2)) {
+			System.out.println("WARNING!One or both dates is not working day!");
+			System.out.println("System uses the last published course.");
+			}
+		else {
+		}
+		
+		System.out.println("Currency " + finalList.get(0).getName() + " with code " + userInputCode);
+		DateValidator dv = new DateValidator();
+		
+		if(dv.isDateValid(userInputDate1) == true && dv.isDateValid(userInputDate2) == true) {
+			for(int i = 0; i < finalList.size(); i++) {
+			    course1 = finalList.get(0).getCourse();
+			    course2 = finalList.get(finalList.size()-1).getCourse();
+			}
+		
+			  System.out.println("Course on " + finalList.get(0).getDate() + " was " + course1);
+			  System.out.println("Course on " + finalList.get(finalList.size()-1).getDate() + " was " + course2);
+		}
+		else {
+			System.out.println("Warning! Date is not valid to 'yyyy-MM-dd' pattern");
+		}
+		
+		double difference = course2 - course1;
 		double diffPercents = (difference * 100)/course1;
-	System.out.println("Currency course has changed by " + diffPercents + "% on this period.");
-	return diffPercents;	
-}
+       
+		if (diffPercents == 0) {
+    	   System.out.println("Currency have not changed on this period.");	
+		}
+		else {
+			System.out.println("Currency course has changed by " + difference + " (" + diffPercents + "%) on this period.");	
+		}
+	}
 }

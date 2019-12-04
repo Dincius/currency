@@ -3,7 +3,6 @@ package currency;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,34 +16,28 @@ public class CSVreader {
 	private static final String splitCSV = ",";
 	
 	 
-	public List<CurrencyList> createItemList(String csvUrl) throws MalformedURLException {
+	public List<String> createItemList(String csvUrl) throws MalformedURLException {
 		
 			BufferedReader br = null;
 		
 		URL urlCSV = new URL(csvUrl);
 	 
-		List<CurrencyList> currList = new ArrayList<CurrencyList>();
+		List<String> currList = new ArrayList<String>();
+		
 		try {
-//			InputStream stream = urlXml.openStream();
-//			InputStreamReader one = new InputStreamReader(stream);
 			br = new BufferedReader(new InputStreamReader(urlCSV.openStream()));
 			
-			String line = ",";
+			String line = "";
 			br.readLine();
+			
 			while ((line = br.readLine()) != null) {
 				String[] allItems = line.split(splitCSV);
-//				System.out.println(allItems);
 				if(allItems.length > 0) {
-					CurrencyList currencyToNormal = new CurrencyList(allItems[0], 
-							allItems[1]);
+					String currencyToNormal = new String(allItems[0].concat(".".concat(allItems[1])));
 					currList.add(currencyToNormal);
 				}
 			}
-//			 for(CurrencyList i : currList) {
-//				 System.out.println(i.getPart1() + "."+ i.getPart2());
-//			 }
-		}
-			
+		}			
 		catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -61,4 +54,21 @@ public class CSVreader {
 		return currList;
 	}
 
+	public List<Currency> makeCurrency(List<String> currencyList) {
+		
+		List<Currency> normalList = new ArrayList<Currency>();
+		for(String i : currencyList) {
+			String str = i.replace("\"", "");
+			String[] arrOfStr = 
+					str.split(";");
+			
+		    Currency currency = new Currency(arrOfStr[0],
+		    		arrOfStr[1],
+		    		Double.parseDouble(arrOfStr[2]),
+		    		arrOfStr[3]);
+		    normalList.add(currency);
+			}
+		return normalList;
+		
+	}
 }
