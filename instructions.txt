@@ -1,0 +1,39 @@
+===================================================
+************* I N S T R U C T I O N S *************
+===================================================
+
+This system uses information from Bank of Lithuania.
+To use this system internet connection is required.
+Information is available from 30th September 2014 to 
+today (it is published 17:00 each working day).
+
+When system is runned, please choose the function:
+* Enter 1 if you want to know course on specific day
+of currencies.
+	* Enter the date in pattern "yyyy-MM-dd".
+	* Enter codes of currencies you preffered. 
+	Enter 0 if you have entered all currencies 
+	code you needed.
+System outputs currencies name, currencies code, date 
+you have entered and course on that date.
+
+* Enter 2 if you want to know currecy courses on period 
+of time. 
+	* Enter the first date in pattern "yyyy-MM-dd"
+(earliest).
+	* Enter the first date in pattern "yyyy-MM-dd"
+(latest).	
+	* Enter codes of currencies you preffered. 
+	Enter 0 if you have entered all currencies 
+	code you needed.
+System outputs currencies name, currencies code, date 
+you have entered and course on both date. The course 
+difference is counted and displayed in units and 
+percents.
+
+* Enter 3 if you want to exit.
+
+System also checks if you have entered weekend day or
+holiday day and gives you warning.
+Warning is displayed if date you have entered do not
+match "yyyy-MM-dd" pattern.
