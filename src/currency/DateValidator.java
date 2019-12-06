@@ -11,7 +11,6 @@ import java.util.List;
  		private String dateStr;
 		
 public boolean isDateValid(String dateStr) {
-		   // DateFormat sdf = new SimpleDateFormat(this.dateFormat);
 		    String pattern = "yyyy-MM-dd";
 		    DateFormat format = new SimpleDateFormat(pattern);
 	 
@@ -39,24 +38,24 @@ public boolean isDateCorrect(String dateStr) throws ParseException {
 			return false;
 		}
 		
-		if (cal.get(Calendar.MONTH) == Calendar.JANUARY
+		else if (cal.get(Calendar.MONTH) == Calendar.JANUARY
 			&& cal.get(Calendar.DAY_OF_MONTH) == 1) {
 			return false;
 		}
 		
-		// check if Christmas
-		if (cal.get(Calendar.MONTH) == Calendar.DECEMBER
+		else if (cal.get(Calendar.MONTH) == Calendar.DECEMBER
 			&& cal.get(Calendar.DAY_OF_MONTH) == 25) {
 			return false;
 		}
 		
-		// check if 4th of July
-		if (cal.get(Calendar.MONTH) == Calendar.MAY
+		else if (cal.get(Calendar.MONTH) == Calendar.MAY
 			&& cal.get(Calendar.DAY_OF_MONTH) == 1) {
 			return false;
 		}
-				
+		
+		else {
 		return true;
+		}
 	}
 	}
 

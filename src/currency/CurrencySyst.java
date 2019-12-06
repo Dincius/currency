@@ -32,8 +32,6 @@ public class CurrencySyst {
 			case "1": 				
 				System.out.println("* Please enter the date in format 'yyyy-MM-dd'");
 				userInputDate1 = sn.next();
-//				System.out.println("* Please enter code of currency");
-//				userInputCode = sn.next();
 				inputCodes = codesToArray();
 				courseOfSpecDate(userInputDate1, inputCodes);
 				System.out.println("Choose again:\n");
@@ -43,9 +41,6 @@ public class CurrencySyst {
 				userInputDate1 = sn.next();
 				System.out.println("* Please enter the second date in format 'yyyy-MM-dd'");
 				userInputDate2 = sn.next();
-//				System.out.println("* Please enter code of currency");
-//				System.out.println("Enter 0 to finish.");
-//				userInputCode = sn.next();
 				inputCodes = codesToArray();
 				diffOfCourse(userInputDate1, userInputDate2, inputCodes);
 				System.out.println("Choose again:\n");
